@@ -1,15 +1,17 @@
 {
   "files": {
-    "main.css": "/fyp-ui/static/css/main.e6c13ad2.css",
-    "main.js": "/fyp-ui/static/js/main.758ce5dc.js",
+    "main.css": "/fyp-ui/static/css/main.d494c052.css",
+    "main.js": "/fyp-ui/static/js/main.fafbd8bd.js",
     "static/js/453.9f8fd2f2.chunk.js": "/fyp-ui/static/js/453.9f8fd2f2.chunk.js",
+    "static/media/Sequel Sans Roman Disp.ttf": "/fyp-ui/static/media/Sequel Sans Roman Disp.f2c71255a79d4a370cc9.ttf",
+    "static/media/cube-abstract-ai-1920x1280.webp": "/fyp-ui/static/media/cube-abstract-ai-1920x1280.e0b4a17ce3702ef5bcfd.webp",
     "index.html": "/fyp-ui/index.html",
-    "main.e6c13ad2.css.map": "/fyp-ui/static/css/main.e6c13ad2.css.map",
-    "main.758ce5dc.js.map": "/fyp-ui/static/js/main.758ce5dc.js.map",
+    "main.d494c052.css.map": "/fyp-ui/static/css/main.d494c052.css.map",
+    "main.fafbd8bd.js.map": "/fyp-ui/static/js/main.fafbd8bd.js.map",
     "453.9f8fd2f2.chunk.js.map": "/fyp-ui/static/js/453.9f8fd2f2.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6c13ad2.css",
-    "static/js/main.758ce5dc.js"
+    "static/css/main.d494c052.css",
+    "static/js/main.fafbd8bd.js"
   ]
 }
