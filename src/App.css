@@ -1,0 +1,61 @@
+/* Full-screen background image */
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("C:\Users\USER\OneDrive\Desktop\FYP\fyp-ui-master\public\cube-abstract-ai-1920x1280.webp"); /* Add your image URL here */
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  z-index: -1; /* Place it behind other content */
+}
+
+/* Semi-transparent overlay for the background */
+.background-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust transparency */
+}
+
+/* Main content styling */
+.content {
+  position: relative;
+  z-index: 1; /* Ensure content is on top of the background */
+  color: #ffffff !important; /* Text color for readability */
+  padding: 20px;
+}
+
+/* Card styling for transparency and white text */
+.transparent-card {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ) !important; /* Transparent dark background */
+  color: white !important; /* White text color */
+}
+
+/* Transparent Navbar */
+.transparent-navbar {
+  background-color: rgba(0, 0, 0, 0.5) !important; /* Adjust transparency */
+  box-shadow: non !important; /* Remove shadow */
+}
+
+/* Styling for Navbar Links */
+.navbar-link {
+  color: white;
+  margin: 0 15px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.navbar-link:hover {
+  color: #ccc; /* Lighter color on hover */
+}
