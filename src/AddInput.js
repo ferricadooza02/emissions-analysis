@@ -11,8 +11,18 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  MenuItem,
+  IconButton,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import { ArrowDownward, ArrowUpward, Remove } from "@mui/icons-material";
 
 // Function to format numbers in scientific notation
 const formatScientificNotation = (value) => {
@@ -24,6 +34,27 @@ const AddInput = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    model: "",
+    task: "",
+    gpu: "",
+    energy: "",
+    emissions: "",
+    runtime: "",
+    github_user: "",
+    otherModel: "",
+    otherTask: "",
+    otherGpu: "",
+  });
+  const [formErrors, setFormErrors] = useState({});
+  const [filters, setFilters] = useState({
+    model: "",
+    task: "",
+    gpu: "",
+    github_user: "",
+  });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "normal" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,21 +72,113 @@ const AddInput = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    return (
-      <Typography align="center" variant="h6" sx={{ marginTop: 4, color: "white" }}>
-        Loading...
-      </Typography>
-    );
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  if (error) {
-    return (
-      <Typography align="center" variant="h6" color="error" sx={{ marginTop: 4 }}>
-        {error}
-      </Typography>
-    );
-  }
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.model || (formData.model === "Others" && !formData.otherModel)) {
+      errors.model = "Model is required.";
+    }
+    if (!formData.task || (formData.task === "Others" && !formData.otherTask)) {
+      errors.task = "Task is required.";
+    }
+    if (!formData.gpu || (formData.gpu === "Others" && !formData.otherGpu)) {
+      errors.gpu = "GPU is required.";
+    }
+    if (!formData.energy || formData.energy <= 0 || isNaN(formData.energy)) {
+      errors.energy = "Valid energy is required.";
+    }
+    if (!formData.emissions || formData.emissions <= 0 || isNaN(formData.emissions)) {
+      errors.emissions = "Valid emissions value is required.";
+    }
+    if (!formData.runtime || formData.runtime <= 0 || isNaN(formData.runtime)) {
+      errors.runtime = "Valid runtime is required.";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const dataToSubmit = {
+        model: formData.model === "Others" ? formData.otherModel : formData.model,
+        task: formData.task === "Others" ? formData.otherTask : formData.task,
+        gpu: formData.gpu === "Others" ? formData.otherGpu : formData.gpu,
+        energy: formData.energy,
+        emissions: formData.emissions,
+        runtime: formData.runtime,
+        github_user: formData.github_user || null,
+        date_added: new Date().toISOString().split("T")[0],
+      };
+      await axios.post("http://localhost:5000/api/data", dataToSubmit);
+      setRows((prevRows) => [...prevRows, dataToSubmit]);
+      setOpen(false);
+      setFormData({
+        model: "",
+        task: "",
+        gpu: "",
+        energy: "",
+        emissions: "",
+        runtime: "",
+        github_user: "",
+        otherModel: "",
+        otherTask: "",
+        otherGpu: "",
+      });
+    } catch (err) {
+      console.error("Error adding data:", err);
+      alert("Failed to submit data. Please check console logs.");
+    }
+  };
+
+  const handleSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    } else if (sortConfig.key === key && sortConfig.direction === "descending") {
+      direction = "normal"; // Reset to normal state
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedRows = [...rows].sort((a, b) => {
+    if (sortConfig.direction === "normal") return 0; // No sorting
+    const isAscending = sortConfig.direction === "ascending";
+    const aValue =
+      sortConfig.key === "emissionsRate" ? a.emissions / (a.runtime * 60) : a[sortConfig.key];
+    const bValue =
+      sortConfig.key === "emissionsRate" ? b.emissions / (b.runtime * 60) : b[sortConfig.key];
+    if (aValue < bValue) return isAscending ? -1 : 1;
+    if (aValue > bValue) return isAscending ? 1 : -1;
+    return 0;
+  });
+
+  const filteredRows = sortedRows.filter((row) =>
+    Object.entries(filters).every(
+      ([key, value]) =>
+        !value || row[key]?.toLowerCase().includes(value.toLowerCase())
+    )
+  );
+
+  const renderSortIcon = (key) => {
+    if (sortConfig.key === key) {
+      if (sortConfig.direction === "ascending") return <ArrowUpward />;
+      if (sortConfig.direction === "descending") return <ArrowDownward />;
+    }
+    return <Remove />; // Default icon for "normal" state
+  };
 
   return (
     <div>
@@ -75,78 +198,385 @@ const AddInput = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Table Header */}
-      <Typography
-        variant="h4"
-        gutterBottom
-        align="center"
-        sx={{ marginTop: 4, color: "white" }}
-      >
-        Add Input Data
-      </Typography>
-
-      {/* Table */}
-      <TableContainer
-        component={Paper}
+      {/* Title and Add Input Button */}
+      <Box
         sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
           maxWidth: "90%",
           margin: "20px auto",
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-          borderRadius: "8px",
         }}
       >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <strong>Model</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Task</strong>
-              </TableCell>
-              <TableCell>
-                <strong>GPU</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Energy (kWh)</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Emissions (kg CO₂)</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Runtime (min)</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Emissions Rate (g CO₂ eq. / s)</strong>
-              </TableCell>
-              <TableCell>
-                <strong>GitHub User</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Date Added</strong>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.model}</TableCell>
-                <TableCell>{row.task}</TableCell>
-                <TableCell>{row.gpu}</TableCell>
-                <TableCell>{row.energy}</TableCell>
-                <TableCell>{row.emissions}</TableCell>
-                <TableCell>{row.runtime}</TableCell>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ color: "white", flexGrow: 1, textAlign: "center" }}
+        >
+          Model-Task Energy Consumption & Emissions
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ position: "absolute", right: 0 }}
+          onClick={() => setOpen(true)}
+        >
+          Add Input
+        </Button>
+      </Box>
+
+      {/* Filters */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          justifyContent: "center",
+          margin: "20px auto",
+          maxWidth: "90%",
+        }}
+      >
+        <TextField
+          placeholder="Filter by Model" // Use placeholder instead of label
+          variant="outlined"
+          name="model"
+          value={filters.model}
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{
+            input: { color: "white" }, // Makes the typed text white
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "white", // Makes the border of the box white
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Keeps the border white on hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white", // Keeps the border white when focused
+              },
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "white", // Makes the placeholder text white
+              opacity: 1, // Ensures the placeholder is fully opaque
+            },
+          }}
+        />
+        <TextField
+          placeholder="Filter by Task" // Use placeholder instead of label
+          variant="outlined"
+          name="task"
+          value={filters.task}
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{
+            input: { color: "white" }, // Typed text remains white
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "white", // Border remains white
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Border remains white on hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white", // Border remains white when focused
+              },
+              backgroundColor: "transparent", // Prevents the background from turning white
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "white", // Placeholder text is white
+              opacity: 1, // Fully opaque placeholder
+            },
+          }}
+        />
+        <TextField
+          placeholder="Filter by GPU" // Use placeholder instead of label
+          variant="outlined"
+          name="gpu"
+          value={filters.gpu}
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{
+            input: { color: "white" }, // Typed text remains white
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "white", // Border remains white
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Border remains white on hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white", // Border remains white when focused
+              },
+              backgroundColor: "transparent", // Prevents the background from turning white
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "white", // Placeholder text is white
+              opacity: 1, // Fully opaque placeholder
+            },
+          }}
+        />
+        <TextField
+          placeholder="Filter by GitHub User" // Use placeholder instead of label
+          variant="outlined"
+          name="github_user"
+          value={filters.github_user}
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{
+            input: { color: "white" }, // Typed text remains white
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "white", // Border remains white
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Border remains white on hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white", // Border remains white when focused
+              },
+              backgroundColor: "transparent", // Prevents the background from turning white
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "white", // Placeholder text is white
+              opacity: 1, // Fully opaque placeholder
+            },
+          }}
+        />
+      </Box>
+
+      <Box sx={{ maxWidth: "90%", margin: "20px auto", position: "relative" }}>
+
+        <TableContainer
+          component={Paper}
+          sx={{
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+            borderRadius: "8px",
+            maxHeight: "70vh", // Limit table height to enable scrolling
+            overflow: "auto",
+          }}
+        >
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
                 <TableCell>
-                  {formatScientificNotation(row.emissions / (row.runtime * 60))}
+                  <strong>Model</strong>
                 </TableCell>
-                <TableCell>{row.github_user}</TableCell>
-                <TableCell>{row.date_added}</TableCell>
+                <TableCell>
+                  <strong>Task</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>GPU</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>
+                    Energy (kWh)
+                    <IconButton onClick={() => handleSort("energy")}>
+                      {renderSortIcon("energy")}
+                    </IconButton>
+                  </strong>
+                </TableCell>
+                <TableCell>
+                  <strong>
+                    Emissions (kg CO₂)
+                    <IconButton onClick={() => handleSort("emissions")}>
+                      {renderSortIcon("emissions")}
+                    </IconButton>
+                  </strong>
+                </TableCell>
+                <TableCell>
+                  <strong>
+                    Runtime (min)
+                    <IconButton onClick={() => handleSort("runtime")}>
+                      {renderSortIcon("runtime")}
+                    </IconButton>
+                  </strong>
+                </TableCell>
+                <TableCell>
+                  <strong>
+                    Emissions Rate (g CO₂ eq. / s)
+                    <IconButton onClick={() => handleSort("emissionsRate")}>
+                      {renderSortIcon("emissionsRate")}
+                    </IconButton>
+                  </strong>
+                </TableCell>
+                <TableCell>
+                  <strong>GitHub User</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>
+                    Date Added
+                    <IconButton onClick={() => handleSort("date_added")}>
+                      {renderSortIcon("date_added")}
+                    </IconButton>
+                  </strong>
+                </TableCell>
               </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredRows.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>{row.model}</TableCell>
+                  <TableCell>{row.task}</TableCell>
+                  <TableCell>{row.gpu}</TableCell>
+                  <TableCell>{row.energy}</TableCell>
+                  <TableCell>{row.emissions}</TableCell>
+                  <TableCell>{row.runtime}</TableCell>
+                  <TableCell>
+                    {formatScientificNotation(row.emissions / (row.runtime * 60))}
+                  </TableCell>
+                  <TableCell>{row.github_user}</TableCell>
+                  <TableCell>{row.date_added}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Add Input</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Model"
+            name="model"
+            value={formData.model}
+            onChange={handleChange}
+            fullWidth
+            select
+            error={!!formErrors.model}
+            helperText={formErrors.model}
+          >
+            {["LLaMA-2-7B", "Mistral-7B", "Gemma-2B", "Gemma-7B", "Others"].map(
+              (option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              )
+            )}
+          </TextField>
+          {formData.model === "Others" && (
+            <TextField
+              margin="dense"
+              label="Custom Model"
+              name="otherModel"
+              value={formData.otherModel}
+              onChange={handleChange}
+              fullWidth
+            />
+          )}
+
+          <TextField
+            margin="dense"
+            label="Task"
+            name="task"
+            value={formData.task}
+            onChange={handleChange}
+            fullWidth
+            select
+            error={!!formErrors.task}
+            helperText={formErrors.task}
+          >
+            {["Question Answering", "Text Summarisation", "Sentiment Analysis", "Others"].map(
+              (option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              )
+            )}
+          </TextField>
+          {formData.task === "Others" && (
+            <TextField
+              margin="dense"
+              label="Custom Task"
+              name="otherTask"
+              value={formData.otherTask}
+              onChange={handleChange}
+              fullWidth
+            />
+          )}
+
+          <TextField
+            margin="dense"
+            label="GPU"
+            name="gpu"
+            value={formData.gpu}
+            onChange={handleChange}
+            fullWidth
+            select
+            error={!!formErrors.gpu}
+            helperText={formErrors.gpu}
+          >
+            {["T4", "L4", "A100", "Others"].map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </TextField>
+          {formData.gpu === "Others" && (
+            <TextField
+              margin="dense"
+              label="Custom GPU"
+              name="otherGpu"
+              value={formData.otherGpu}
+              onChange={handleChange}
+              fullWidth
+            />
+          )}
+
+          <TextField
+            margin="dense"
+            label="Energy (kWh)"
+            name="energy"
+            value={formData.energy}
+            onChange={handleChange}
+            fullWidth
+            type="number"
+            error={!!formErrors.energy}
+            helperText={formErrors.energy}
+          />
+          <TextField
+            margin="dense"
+            label="Emissions (kg CO₂)"
+            name="emissions"
+            value={formData.emissions}
+            onChange={handleChange}
+            fullWidth
+            type="number"
+            error={!!formErrors.emissions}
+            helperText={formErrors.emissions}
+          />
+          <TextField
+            margin="dense"
+            label="Runtime (min)"
+            name="runtime"
+            value={formData.runtime}
+            onChange={handleChange}
+            fullWidth
+            type="number"
+            error={!!formErrors.runtime}
+            helperText={formErrors.runtime}
+          />
+          <TextField
+            margin="dense"
+            label="GitHub User"
+            name="github_user"
+            value={formData.github_user}
+            onChange={handleChange}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

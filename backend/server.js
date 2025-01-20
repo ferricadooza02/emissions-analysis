@@ -17,18 +17,15 @@ mongoose
 const DataEntrySchema = new mongoose.Schema({
   model: {
     type: String,
-    required: true,
-    enum: ["LLaMA-2-7B", "Mistral-7B", "Gemma-2B", "Gemma-7B"], // Valid models
+    required: true, // Removed `enum` validation
   },
   task: {
     type: String,
-    required: true,
-    enum: ["Question Answering", "Text Summarisation", "Sentiment Analysis"], // Valid tasks
+    required: true, // Removed `enum` validation
   },
   gpu: {
     type: String,
-    required: true,
-    enum: ["T4", "L4", "A100"], // Valid GPUs
+    required: true, // Removed `enum` validation
   },
   energy: {
     type: Number,
@@ -40,18 +37,13 @@ const DataEntrySchema = new mongoose.Schema({
     required: true,
     min: 0, // Must be positive
   },
-  emissionsRate: {
-    type: String,
-    required: true,
-  },
   runtime: {
     type: Number,
     required: true,
     min: 0, // Must be positive
   },
   github_user: {
-    type: String,
-    required: true,
+    type: String, // Optional field
   },
   date_added: {
     type: String, // Store date as string in YYYY-MM-DD format
@@ -76,26 +68,30 @@ app.get("/", (req, res) => {
 // Create Data Entry
 app.post("/api/data", async (req, res) => {
   try {
-    const dataEntry = new DataEntry(req.body);
+    // Automatically add the current date
+    const dataEntry = new DataEntry({
+      ...req.body,
+      date_added: new Date().toISOString().split("T")[0], // YYYY-MM-DD format
+    });
     const savedData = await dataEntry.save();
     res.status(201).json({ message: "Data added successfully!", data: savedData });
   } catch (error) {
+    console.error("Error creating data entry:", error.message);
     res.status(400).json({ error: error.message });
   }
 });
 
 // Get All Data Entries
 app.get("/api/data", async (req, res) => {
-    try {
-      const dataEntries = await DataEntry.find(); // Fetches only actual data documents
-      console.log("Fetched Data Entries:", dataEntries); // Debugging
-      res.status(200).json(dataEntries);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-  
+  try {
+    const dataEntries = await DataEntry.find(); // Fetch all entries
+    console.log("Fetched Data Entries:", dataEntries); // Debugging
+    res.status(200).json(dataEntries);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Delete Data Entry by ID
 app.delete("/api/data/:id", async (req, res) => {
