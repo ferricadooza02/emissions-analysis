@@ -44,6 +44,7 @@ const AddInput = () => {
     runtime: "",
     github_user: "",
     gpu_location: "", 
+    code_environment: "",
     timestamp: "", 
     remarks: "", 
     otherModel: "",
@@ -56,6 +57,7 @@ const AddInput = () => {
     task: "",
     gpu: "",
     gpu_location: "",
+    code_environment: "",
     github_user: "",
   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "normal" });
@@ -109,6 +111,9 @@ const AddInput = () => {
     if (!formData.gpu_location) {
       errors.gpu_location = "GPU Location is required.";
     }
+    if (!formData.code_environment) {
+      errors.code_environment = "Code Environment is required.";
+    }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -128,7 +133,8 @@ const AddInput = () => {
         runtime: formData.runtime,
         github_user: formData.github_user || null,
         date_added: new Date().toISOString().split("T")[0],
-        gpu_location: formData.gpu_location, 
+        gpu_location: formData.gpu_location,
+        code_environment: formData.code_environment, 
         timestamp: formData.timestamp || "NA", 
         remarks: formData.remarks || null, 
       };
@@ -327,6 +333,23 @@ const AddInput = () => {
           }}
         />
         <TextField
+          placeholder="Filter by Code Environment" // New filter field
+          variant="outlined"
+          name="code_environment"
+          value={filters.code_environment}
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{
+            input: { color: "white" },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+            },
+            "& .MuiInputBase-input::placeholder": { color: "white", opacity: 1 },
+          }}
+        />
+        <TextField
           placeholder="Filter by GitHub User"
           variant="outlined"
           name="github_user"
@@ -383,6 +406,7 @@ const AddInput = () => {
                   <IconButton onClick={() => handleSort("emissionsRate")}>{renderSortIcon("emissionsRate")}</IconButton>
                 </TableCell>
                 <TableCell><strong>GPU Location</strong></TableCell>
+                <TableCell><strong>Code Environment</strong></TableCell>
                 <TableCell><strong>Timestamp</strong></TableCell>
                 <TableCell><strong>GitHub User</strong></TableCell>
                 <TableCell><strong>Date Added</strong></TableCell>
@@ -402,6 +426,7 @@ const AddInput = () => {
                   {formatScientificNotation(row.emissions / (row.runtime * 60))}
                 </TableCell>
                 <TableCell>{row.gpu_location}</TableCell>
+                <TableCell>{row.code_environment}</TableCell>
                 <TableCell>{row.timestamp}</TableCell>
                 <TableCell>{row.github_user}</TableCell>
                 <TableCell>{row.date_added}</TableCell>
@@ -557,6 +582,16 @@ const AddInput = () => {
             fullWidth
             error={!!formErrors.gpu_location}
             helperText={formErrors.gpu_location}
+          />
+          <TextField
+            margin="dense"
+            label="Code Environment"
+            name="code_environment"
+            value={formData.code_environment}
+            onChange={handleChange}
+            fullWidth
+            error={!!formErrors.code_environment}
+            helperText={formErrors.code_environment}
           />
           <TextField
             margin="dense"
