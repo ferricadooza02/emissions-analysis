@@ -43,6 +43,9 @@ const AddInput = () => {
     emissions: "",
     runtime: "",
     github_user: "",
+    gpu_location: "", 
+    timestamp: "", 
+    remarks: "", 
     otherModel: "",
     otherTask: "",
     otherGpu: "",
@@ -52,6 +55,7 @@ const AddInput = () => {
     model: "",
     task: "",
     gpu: "",
+    gpu_location: "",
     github_user: "",
   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "normal" });
@@ -102,6 +106,9 @@ const AddInput = () => {
     if (!formData.runtime || formData.runtime <= 0 || isNaN(formData.runtime)) {
       errors.runtime = "Valid runtime is required.";
     }
+    if (!formData.gpu_location) {
+      errors.gpu_location = "GPU Location is required.";
+    }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -121,6 +128,9 @@ const AddInput = () => {
         runtime: formData.runtime,
         github_user: formData.github_user || null,
         date_added: new Date().toISOString().split("T")[0],
+        gpu_location: formData.gpu_location, 
+        timestamp: formData.timestamp || "NA", 
+        remarks: formData.remarks || null, 
       };
       await axios.post("http://localhost:5000/api/data", dataToSubmit);
       setRows((prevRows) => [...prevRows, dataToSubmit]);
@@ -246,100 +256,93 @@ const AddInput = () => {
           sx={{
             input: { color: "white" }, // Makes the typed text white
             "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "white", // Makes the border of the box white
-              },
-              "&:hover fieldset": {
-                borderColor: "white", // Keeps the border white on hover
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "white", // Keeps the border white when focused
-              },
+              "& fieldset": { borderColor: "white" }, // White border
+              "&:hover fieldset": { borderColor: "white" }, // White border on hover
+              "&.Mui-focused fieldset": { borderColor: "white" }, // White border when focused
             },
             "& .MuiInputBase-input::placeholder": {
-              color: "white", // Makes the placeholder text white
-              opacity: 1, // Ensures the placeholder is fully opaque
+              color: "white", // Placeholder text color
+              opacity: 1,
             },
           }}
         />
         <TextField
-          placeholder="Filter by Task" // Use placeholder instead of label
+          placeholder="Filter by Task"
           variant="outlined"
           name="task"
           value={filters.task}
           onChange={handleFilterChange}
           fullWidth
           sx={{
-            input: { color: "white" }, // Typed text remains white
+            input: { color: "white" },
             "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "white", // Border remains white
-              },
-              "&:hover fieldset": {
-                borderColor: "white", // Border remains white on hover
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "white", // Border remains white when focused
-              },
-              backgroundColor: "transparent", // Prevents the background from turning white
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
             },
             "& .MuiInputBase-input::placeholder": {
-              color: "white", // Placeholder text is white
-              opacity: 1, // Fully opaque placeholder
+              color: "white",
+              opacity: 1,
             },
           }}
         />
         <TextField
-          placeholder="Filter by GPU" // Use placeholder instead of label
+          placeholder="Filter by GPU"
           variant="outlined"
           name="gpu"
           value={filters.gpu}
           onChange={handleFilterChange}
           fullWidth
           sx={{
-            input: { color: "white" }, // Typed text remains white
+            input: { color: "white" },
             "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "white", // Border remains white
-              },
-              "&:hover fieldset": {
-                borderColor: "white", // Border remains white on hover
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "white", // Border remains white when focused
-              },
-              backgroundColor: "transparent", // Prevents the background from turning white
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
             },
             "& .MuiInputBase-input::placeholder": {
-              color: "white", // Placeholder text is white
-              opacity: 1, // Fully opaque placeholder
+              color: "white",
+              opacity: 1,
             },
           }}
         />
         <TextField
-          placeholder="Filter by GitHub User" // Use placeholder instead of label
+          placeholder="Filter by GPU Location" // New filter
+          variant="outlined"
+          name="gpu_location" // Ensure the filter name matches your state structure
+          value={filters.gpu_location}
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{
+            input: { color: "white" },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "white",
+              opacity: 1,
+            },
+          }}
+        />
+        <TextField
+          placeholder="Filter by GitHub User"
           variant="outlined"
           name="github_user"
           value={filters.github_user}
           onChange={handleFilterChange}
           fullWidth
           sx={{
-            input: { color: "white" }, // Typed text remains white
+            input: { color: "white" },
             "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "white", // Border remains white
-              },
-              "&:hover fieldset": {
-                borderColor: "white", // Border remains white on hover
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "white", // Border remains white when focused
-              },
-              backgroundColor: "transparent", // Prevents the background from turning white
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
             },
             "& .MuiInputBase-input::placeholder": {
-              color: "white", // Placeholder text is white
-              opacity: 1, // Fully opaque placeholder
+              color: "white",
+              opacity: 1,
             },
           }}
         />
@@ -358,79 +361,54 @@ const AddInput = () => {
           }}
         >
           <Table stickyHeader>
-            <TableHead>
+          <TableHead>
               <TableRow>
+                <TableCell><strong>Model</strong></TableCell>
+                <TableCell><strong>Task</strong></TableCell>
+                <TableCell><strong>GPU</strong></TableCell>
                 <TableCell>
-                  <strong>Model</strong>
+                  <strong>Energy (kWh)</strong>
+                  <IconButton onClick={() => handleSort("energy")}>{renderSortIcon("energy")}</IconButton>
                 </TableCell>
                 <TableCell>
-                  <strong>Task</strong>
+                  <strong>Emissions (kg CO₂)</strong>
+                  <IconButton onClick={() => handleSort("emissions")}>{renderSortIcon("emissions")}</IconButton>
                 </TableCell>
                 <TableCell>
-                  <strong>GPU</strong>
+                  <strong>Runtime (min)</strong>
+                  <IconButton onClick={() => handleSort("runtime")}>{renderSortIcon("runtime")}</IconButton>
                 </TableCell>
                 <TableCell>
-                  <strong>
-                    Energy (kWh)
-                    <IconButton onClick={() => handleSort("energy")}>
-                      {renderSortIcon("energy")}
-                    </IconButton>
-                  </strong>
+                  <strong>Emissions Rate (g CO₂ eq. / s)</strong>
+                  <IconButton onClick={() => handleSort("emissionsRate")}>{renderSortIcon("emissionsRate")}</IconButton>
                 </TableCell>
-                <TableCell>
-                  <strong>
-                    Emissions (kg CO₂)
-                    <IconButton onClick={() => handleSort("emissions")}>
-                      {renderSortIcon("emissions")}
-                    </IconButton>
-                  </strong>
-                </TableCell>
-                <TableCell>
-                  <strong>
-                    Runtime (min)
-                    <IconButton onClick={() => handleSort("runtime")}>
-                      {renderSortIcon("runtime")}
-                    </IconButton>
-                  </strong>
-                </TableCell>
-                <TableCell>
-                  <strong>
-                    Emissions Rate (g CO₂ eq. / s)
-                    <IconButton onClick={() => handleSort("emissionsRate")}>
-                      {renderSortIcon("emissionsRate")}
-                    </IconButton>
-                  </strong>
-                </TableCell>
-                <TableCell>
-                  <strong>GitHub User</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>
-                    Date Added
-                    <IconButton onClick={() => handleSort("date_added")}>
-                      {renderSortIcon("date_added")}
-                    </IconButton>
-                  </strong>
-                </TableCell>
+                <TableCell><strong>GPU Location</strong></TableCell>
+                <TableCell><strong>Timestamp</strong></TableCell>
+                <TableCell><strong>GitHub User</strong></TableCell>
+                <TableCell><strong>Date Added</strong></TableCell>
+                <TableCell><strong>Remarks</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.model}</TableCell>
-                  <TableCell>{row.task}</TableCell>
-                  <TableCell>{row.gpu}</TableCell>
-                  <TableCell>{row.energy}</TableCell>
-                  <TableCell>{row.emissions}</TableCell>
-                  <TableCell>{row.runtime}</TableCell>
-                  <TableCell>
-                    {formatScientificNotation(row.emissions / (row.runtime * 60))}
-                  </TableCell>
-                  <TableCell>{row.github_user}</TableCell>
-                  <TableCell>{row.date_added}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            {filteredRows.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.model}</TableCell>
+                <TableCell>{row.task}</TableCell>
+                <TableCell>{row.gpu}</TableCell>
+                <TableCell>{row.energy}</TableCell>
+                <TableCell>{row.emissions}</TableCell>
+                <TableCell>{row.runtime}</TableCell>
+                <TableCell>
+                  {formatScientificNotation(row.emissions / (row.runtime * 60))}
+                </TableCell>
+                <TableCell>{row.gpu_location}</TableCell>
+                <TableCell>{row.timestamp}</TableCell>
+                <TableCell>{row.github_user}</TableCell>
+                <TableCell>{row.date_added}</TableCell>
+                <TableCell>{row.remarks}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
           </Table>
         </TableContainer>
       </Box>
@@ -509,6 +487,9 @@ const AddInput = () => {
             error={!!formErrors.gpu}
             helperText={formErrors.gpu}
           >
+            <MenuItem value="" disabled>
+              Click Others to specify GPU Model, e.g., NVIDIA T4
+            </MenuItem>
             {["T4", "L4", "A100", "Others"].map((option) => (
               <MenuItem key={option} value={option}>
                 {option}
@@ -564,6 +545,34 @@ const AddInput = () => {
             label="GitHub User"
             name="github_user"
             value={formData.github_user}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="GPU Location"
+            name="gpu_location"
+            value={formData.gpu_location}
+            onChange={handleChange}
+            fullWidth
+            error={!!formErrors.gpu_location}
+            helperText={formErrors.gpu_location}
+          />
+          <TextField
+            margin="dense"
+            label="Timestamp (YYYY-MM-DDTHH:MM:SS)"
+            name="timestamp"
+            value={formData.timestamp}
+            onChange={handleChange}
+            fullWidth
+            error={!!formErrors.timestamp}
+            helperText={formErrors.timestamp}
+          />
+          <TextField
+            margin="dense"
+            label="Remarks"
+            name="remarks"
+            value={formData.remarks}
             onChange={handleChange}
             fullWidth
           />

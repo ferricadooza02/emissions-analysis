@@ -17,41 +17,53 @@ mongoose
 const DataEntrySchema = new mongoose.Schema({
   model: {
     type: String,
-    required: true, // Removed `enum` validation
+    required: true,
   },
   task: {
     type: String,
-    required: true, // Removed `enum` validation
+    required: true,
   },
   gpu: {
     type: String,
-    required: true, // Removed `enum` validation
+    required: true,
   },
   energy: {
     type: Number,
     required: true,
-    min: 0, // Must be positive
+    min: 0,
   },
   emissions: {
     type: Number,
     required: true,
-    min: 0, // Must be positive
+    min: 0,
   },
   runtime: {
     type: Number,
     required: true,
-    min: 0, // Must be positive
+    min: 0,
   },
   github_user: {
-    type: String, // Optional field
+    type: String,
   },
   date_added: {
-    type: String, // Store date as string in YYYY-MM-DD format
+    type: String,
     required: true,
     validate: {
-      validator: (v) => /^\d{4}-\d{2}-\d{2}$/.test(v), // Regex to validate date format
+      validator: (v) => /^\d{4}-\d{2}-\d{2}$/.test(v),
       message: (props) => `${props.value} is not a valid date format (YYYY-MM-DD)!`,
     },
+  },
+  timestamp: {
+    type: Date, // ISODate format
+    default: null, // Can be null if not provided
+  },
+  gpu_location: {
+    type: String, // Optional field
+    default: "Unknown",
+  },
+  remarks: {
+    type: String, // Optional field
+    default: "No remarks provided",
   },
 });
 
@@ -68,10 +80,9 @@ app.get("/", (req, res) => {
 // Create Data Entry
 app.post("/api/data", async (req, res) => {
   try {
-    // Automatically add the current date
     const dataEntry = new DataEntry({
       ...req.body,
-      date_added: new Date().toISOString().split("T")[0], // YYYY-MM-DD format
+      date_added: new Date().toISOString().split("T")[0], // Automatically set today's date
     });
     const savedData = await dataEntry.save();
     res.status(201).json({ message: "Data added successfully!", data: savedData });
@@ -85,7 +96,6 @@ app.post("/api/data", async (req, res) => {
 app.get("/api/data", async (req, res) => {
   try {
     const dataEntries = await DataEntry.find(); // Fetch all entries
-    console.log("Fetched Data Entries:", dataEntries); // Debugging
     res.status(200).json(dataEntries);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -111,7 +121,7 @@ app.put("/api/data/:id", async (req, res) => {
   try {
     const updatedData = await DataEntry.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true, // Ensure data is validated
+      runValidators: true,
     });
     if (!updatedData) {
       return res.status(404).json({ message: "Data entry not found" });
