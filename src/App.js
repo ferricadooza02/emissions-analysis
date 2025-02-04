@@ -204,9 +204,9 @@ const App = () => {
         <div className="background-overlay"></div>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
+          { /* <Route path="/" element={<Navigate to="/home" replace />} /> */ }
           <Route
-            path="/home"
+            path="/"
             element={
               <Box sx={{ padding: 3 }} className="content">
                 <Typography variant="h2" gutterBottom align="center" sx={{ padding: 6 }}>

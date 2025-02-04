@@ -5,8 +5,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  /* background-image: url("C:\Users\USER\OneDrive\Desktop\FYP\fyp-ui-master\public\cube-abstract-ai-1920x1280.webp"); /* Add your image URL here */ 
-  background-image: url("/FYP-UI/cube-abstract-ai-1920x1280.webp"); /* Add your image URL here */
+  background-image: url("https://mangotmh.github.io/fyp-ui/cube-abstract-ai-1920x1280.webp"); /* Updated Path */
+  /* background-image: url("%PUBLIC_URL%/cube-abstract-ai-1920x1280.webp"); */
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -34,19 +34,14 @@
 
 /* Card styling for transparency and white text */
 .transparent-card {
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.3
-  ) !important; /* Transparent dark background */
+  background-color: rgba(0, 0, 0, 0.3) !important; /* Transparent dark background */
   color: white !important; /* White text color */
 }
 
 /* Transparent Navbar */
 .transparent-navbar {
   background-color: rgba(0, 0, 0, 0.5) !important; /* Adjust transparency */
-  box-shadow: non !important; /* Remove shadow */
+  box-shadow: none !important; /* Remove shadow */
 }
 
 /* Styling for Navbar Links */

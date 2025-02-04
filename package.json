@@ -1,7 +1,7 @@
 {
   "name": "fyp-ui",
   "version": "0.1.0",
-  "homepage": "https://ferricadooza02.github.io/fyp-ui",
+  "homepage": "https://mangotmh.github.io/fyp-ui",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
