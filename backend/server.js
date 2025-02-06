@@ -80,10 +80,21 @@ app.get("/", (req, res) => {
 // Create Data Entry
 app.post("/api/data", async (req, res) => {
   try {
+    let { timestamp, ...data } = req.body;
+
+    // ✅ Convert "NA" or empty timestamp to `null`
+    if (timestamp === "NA" || timestamp === "") {
+      timestamp = null;
+    } else {
+      timestamp = new Date(timestamp); // Convert valid timestamps to Date object
+    }
+
     const dataEntry = new DataEntry({
-      ...req.body,
+      ...data,
+      timestamp, // ✅ Use the converted timestamp
       date_added: new Date().toISOString().split("T")[0], // Automatically set today's date
     });
+
     const savedData = await dataEntry.save();
     res.status(201).json({ message: "Data added successfully!", data: savedData });
   } catch (error) {

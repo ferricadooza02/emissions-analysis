@@ -65,10 +65,10 @@ const AddInput = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const response = await axios.get("http://localhost:5000/api/data");
-        const response = await axios.get("https://fyp-ui.onrender.com/api/data"); // Updated URL
+        const response = await axios.get("http://localhost:5000/api/data");
+        // const response = await axios.get("https://fyp-ui.onrender.com/api/data"); // Updated URL
         setRows(response.data);
-        setLoading(false);
+        setLoading(true);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to fetch data.");
@@ -139,8 +139,8 @@ const AddInput = () => {
         timestamp: formData.timestamp || "NA", 
         remarks: formData.remarks || null, 
       };
-      await axios.post("https://fyp-ui.onrender.com", dataToSubmit);
-      // await axios.post("http://localhost:5000/api/data", dataToSubmit);
+      //await axios.post("https://fyp-ui.onrender.com", dataToSubmit);
+      await axios.post("http://localhost:5000/api/data", dataToSubmit);
       setRows((prevRows) => [...prevRows, dataToSubmit]);
       setOpen(false);
       setFormData({
@@ -386,26 +386,42 @@ const AddInput = () => {
           }}
         >
           <Table stickyHeader>
-          <TableHead>
+            <TableHead>
               <TableRow>
                 <TableCell><strong>Model</strong></TableCell>
                 <TableCell><strong>Task</strong></TableCell>
                 <TableCell><strong>GPU</strong></TableCell>
                 <TableCell>
-                  <strong>Energy (kWh)</strong>
-                  <IconButton onClick={() => handleSort("energy")}>{renderSortIcon("energy")}</IconButton>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexDirection: "row-reverse" }}>
+                    <strong>Energy (kWh)</strong>
+                    <IconButton onClick={() => handleSort("energy")}>
+                      {renderSortIcon("energy")}
+                    </IconButton>
+                  </Box>
                 </TableCell>
                 <TableCell>
-                  <strong>Emissions (kg CO₂)</strong>
-                  <IconButton onClick={() => handleSort("emissions")}>{renderSortIcon("emissions")}</IconButton>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexDirection: "row-reverse" }}>
+                    <strong>Emissions (kg CO₂)</strong>
+                    <IconButton onClick={() => handleSort("emissions")}>
+                      {renderSortIcon("emissions")}
+                    </IconButton>
+                  </Box>
                 </TableCell>
                 <TableCell>
-                  <strong>Runtime (min)</strong>
-                  <IconButton onClick={() => handleSort("runtime")}>{renderSortIcon("runtime")}</IconButton>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexDirection: "row-reverse" }}>
+                    <strong>Runtime (min)</strong>
+                    <IconButton onClick={() => handleSort("runtime")}>
+                      {renderSortIcon("runtime")}
+                    </IconButton>
+                  </Box>
                 </TableCell>
                 <TableCell>
-                  <strong>Emissions Rate (g CO₂ eq. / s)</strong>
-                  <IconButton onClick={() => handleSort("emissionsRate")}>{renderSortIcon("emissionsRate")}</IconButton>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexDirection: "row-reverse" }}>
+                    <strong>Emissions Rate (g CO₂ eq. / s)</strong>
+                    <IconButton onClick={() => handleSort("emissionsRate")}>
+                      {renderSortIcon("emissionsRate")}
+                    </IconButton>
+                  </Box>
                 </TableCell>
                 <TableCell><strong>GPU Location</strong></TableCell>
                 <TableCell><strong>Code Environment</strong></TableCell>

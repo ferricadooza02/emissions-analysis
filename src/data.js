@@ -266,3 +266,74 @@ export const emissionsData = {
     },
   },
 };
+
+export const timePerBatchData = {
+  "LLaMA-2-7B": {
+    "Question Answering": {
+      T4: 1.0503,
+      L4: 0.8415,
+      A100: 0.36615,
+    },
+    "Text Summarisation": {
+      T4: 1.3341,
+      L4: 1.2,
+      A100: 0.3756,
+    },
+    "Sentiment Analysis": {
+      T4: 1.32135,
+      L4: 1.79655,
+      A100: 0.7857,
+    },
+  },
+  "Mistral-7B": {
+    "Question Answering": {
+      T4: 1.0548,
+      L4: 0.89835,
+      A100: 0.4125,
+    },
+    "Text Summarisation": {
+      T4: 1.55625,
+      L4: 1.1277,
+      A100: 0.3987,
+    },
+    "Sentiment Analysis": {
+      T4: 1.3056,
+      L4: 1.013025,
+      A100: 0.45135,
+    },
+  },
+  "Gemma-2B": {
+    "Question Answering": {
+      T4: 0.38925,
+      L4: 0.348,
+      A100: 0.32925,
+    },
+    "Text Summarisation": {
+      T4: 0.58695,
+      L4: 0.45555,
+      A100: 0.2235,
+    },
+    "Sentiment Analysis": {
+      T4: 0.44295,
+      L4: 0.34815,
+      A100: 0.24705,
+    },
+  },
+  "Gemma-7B": {
+    "Question Answering": {
+      A100: 0.4842,
+    },
+    "Text Summarisation": {
+      A100: 0.57405,
+    },
+    "Sentiment Analysis": {
+      A100: 0.40575,
+    },
+  },
+};
+
+export const powerData = {
+  T4: 120.23,
+  L4: 132.57,
+  A100: 292.87,
+};
