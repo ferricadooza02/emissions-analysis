@@ -860,7 +860,7 @@ const App = () => {
   };
 
   return (
-    <Router basename="/fyp-ui">
+    <Router basename="/emissions-analysis">
       <div className="App">
         <div className="background-overlay"></div>
         <Navbar />
