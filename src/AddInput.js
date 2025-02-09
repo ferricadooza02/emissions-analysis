@@ -65,8 +65,8 @@ const AddInput = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/data");
-        // const response = await axios.get("https://fyp-ui.onrender.com/api/data"); // Updated URL
+        // const response = await axios.get("http://localhost:5000/api/data");
+        const response = await axios.get("https://fyp-ui.onrender.com/api/data"); // Updated URL
         setRows(response.data);
         //setLoading(false);
       } catch (err) {
@@ -139,8 +139,8 @@ const AddInput = () => {
         timestamp: formData.timestamp || "NA", 
         remarks: formData.remarks || null, 
       };
-      //await axios.post("https://fyp-ui.onrender.com", dataToSubmit);
-      await axios.post("http://localhost:5000/api/data", dataToSubmit);
+      await axios.post("https://fyp-ui.onrender.com", dataToSubmit);
+      // await axios.post("http://localhost:5000/api/data", dataToSubmit);
       setRows((prevRows) => [...prevRows, dataToSubmit]);
       setOpen(false);
       setFormData({
