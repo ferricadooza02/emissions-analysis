@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/fyp-ui/static/css/main.b8a82219.css",
-    "main.js": "/fyp-ui/static/js/main.90f7f5e1.js",
-    "static/js/453.400783ee.chunk.js": "/fyp-ui/static/js/453.400783ee.chunk.js",
-    "static/media/Sequel Sans Roman Disp.ttf": "/fyp-ui/static/media/Sequel Sans Roman Disp.f2c71255a79d4a370cc9.ttf",
-    "static/media/cube-abstract-ai-1920x1280.webp": "/fyp-ui/static/media/cube-abstract-ai-1920x1280.e0b4a17ce3702ef5bcfd.webp",
-    "index.html": "/fyp-ui/index.html",
-    "main.b8a82219.css.map": "/fyp-ui/static/css/main.b8a82219.css.map",
-    "main.90f7f5e1.js.map": "/fyp-ui/static/js/main.90f7f5e1.js.map",
-    "453.400783ee.chunk.js.map": "/fyp-ui/static/js/453.400783ee.chunk.js.map"
+    "main.css": "/emissions-analysis/static/css/main.bca1ff46.css",
+    "main.js": "/emissions-analysis/static/js/main.f3c85d54.js",
+    "static/js/453.42faa90b.chunk.js": "/emissions-analysis/static/js/453.42faa90b.chunk.js",
+    "static/media/Sequel Sans Roman Disp.ttf": "/emissions-analysis/static/media/Sequel Sans Roman Disp.f2c71255a79d4a370cc9.ttf",
+    "static/media/cube-abstract-ai-1920x1280.webp": "/emissions-analysis/static/media/cube-abstract-ai-1920x1280.e0b4a17ce3702ef5bcfd.webp",
+    "index.html": "/emissions-analysis/index.html",
+    "main.bca1ff46.css.map": "/emissions-analysis/static/css/main.bca1ff46.css.map",
+    "main.f3c85d54.js.map": "/emissions-analysis/static/js/main.f3c85d54.js.map",
+    "453.42faa90b.chunk.js.map": "/emissions-analysis/static/js/453.42faa90b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b8a82219.css",
-    "static/js/main.90f7f5e1.js"
+    "static/css/main.bca1ff46.css",
+    "static/js/main.f3c85d54.js"
   ]
 }
