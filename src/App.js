@@ -18,10 +18,19 @@ import {
 } from "@mui/material";
 import { Link as ScrollLink } from "react-scroll";
 import { NavLink } from "react-router-dom";
-import EmissionsEstimation from "./components/EmissionsEstimation"; // ✅ New component
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // ✅ For dropdown icon
+import EmissionsEstimation from "./components/EmissionsEstimation"; 
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";  
 import { Accordion, AccordionSummary, AccordionDetails, List, ListItem, ListItemText } from "@mui/material"; // ✅ Accordion UI
-
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Label,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const App = () => {
   const [model, setModel] = useState("");
@@ -223,6 +232,19 @@ const App = () => {
     ) {
       // Two selections made
       const tableData = getTableData();
+      const xAxisKey = model ? (gpu ? "Task" : "GPU") : "Model";
+      const colours = ["#4A90E2", "#2AB6B6", "#FF6B6B", "#A685E2", "#F4A261"];
+
+      if (model && gpu && model === "Gemma-7B" && gpu !== "A100") {
+        return (
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Typography variant="h6" color="error" align="center">
+              Gemma-7B could only be fine-tuned on A100. Please select A100 to
+              view relevant data.
+            </Typography>
+          </Box>
+        );
+      }
 
       return (
         <div>
@@ -310,10 +332,97 @@ const App = () => {
               </CardContent>
             </Card>
           </Box>
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Card className="transparent-card" sx={{ width: "50%" }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom align="center">
+                  Emissions Comparison
+                </Typography>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={tableData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+                  >
+                    <XAxis
+                      dataKey={xAxisKey.toLowerCase()}
+                      tick={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 14,
+                      }}
+                    >
+                      <Label
+                        value={xAxisKey}
+                        offset={-10}
+                        position="insideBottom"
+                        style={{
+                          fontFamily: "'Sequel Sans', sans-serif",
+                          fontSize: 16,
+                          fill: "#FFF",
+                        }}
+                      />
+                    </XAxis>
+                    <YAxis
+                      tick={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 14,
+                      }}
+                    >
+                      <Label
+                        value="Emissions (g CO₂ eq.)"
+                        angle={-90}
+                        position="insideLeft"
+                        style={{
+                          fontFamily: "'Sequel Sans', sans-serif",
+                          fontSize: 16,
+                          fill: "#FFF",
+                        }}
+                      />
+                    </YAxis>
+                    <Tooltip
+                      // wrapperStyle={{
+                      //   backgroundColor: "#1E1E1E",
+                      //   color: "#FFF",
+                      //   borderRadius: "5px",
+                      //   padding: "10px",
+                      // }}
+                      contentStyle={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: "14px",
+                      }}
+                      // itemStyle={{ color: "#FFF" }}
+                    />
+                    <Bar
+                      dataKey="emissions"
+                      fill={colours[0]}
+                      name="Emissions"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </Box>
         </div>
       );
     } else if (model && !task && !gpu) {
       // Only model selected
+      const chartData = [];
+
+      tasks.forEach((task) => {
+        gpus.forEach((gpu) => {
+          const entry = emissionsData[model]?.[task]?.[gpu];
+          if (entry) {
+            let existingGPU = chartData.find((d) => d.gpu === gpu);
+            if (!existingGPU) {
+              existingGPU = { gpu };
+              chartData.push(existingGPU);
+            }
+            existingGPU[task] = entry.emissions || 0; // Store emissions per task
+          }
+        });
+      });
+
+      // console.log(chartData);
+
       return (
         <div>
           <Card className="transparent-card" sx={{ mb: 2 }}>
@@ -324,7 +433,7 @@ const App = () => {
               <Typography>{modelInfo[model].description}</Typography>
             </CardContent>
           </Card>
-          <Card className="transparent-card">
+          <Card className="transparent-card" sx={{ mb: 2 }}>
             <CardContent>
               <Box
                 display="grid"
@@ -354,10 +463,103 @@ const App = () => {
               </Box>
             </CardContent>
           </Card>
+          {/* Bar Chart for Emissions per GPU per Task */}
+          <Card className="transparent-card">
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Emissions by GPU and Task
+              </Typography>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <XAxis
+                    dataKey="gpu"
+                    tick={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: 14,
+                    }}
+                  >
+                    <Label
+                      value="GPU"
+                      offset={-5}
+                      position="insideBottom"
+                      style={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 16,
+                        fill: "#FFF",
+                      }}
+                    />
+                  </XAxis>
+                  <YAxis
+                    tick={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: 14,
+                    }}
+                  >
+                    <Label
+                      value="Emissions (g CO₂ eq.)"
+                      angle={-90}
+                      position="insideLeft"
+                      style={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 16,
+                        fill: "#FFF",
+                      }}
+                    />
+                  </YAxis>
+                  <Tooltip
+                    contentStyle={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: "14px",
+                    }}
+                  />
+                  <Legend
+                    layout="horizontal"
+                    verticalAlign="top"
+                    align="center"
+                    wrapperStyle={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: "14px",
+                      color: "#FFF",
+                    }}
+                  />
+                  {tasks.map((task, index) => (
+                    <Bar
+                      key={task}
+                      dataKey={task}
+                      fill={["#4A90E2", "#2AB6B6", "#B67991"][index % 3]}
+                      name={task}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </div>
       );
     } else if (task && !model && !gpu) {
       // Only task selected
+
+      const chartData = [];
+
+      models.forEach((model) => {
+        gpus.forEach((gpu) => {
+          const entry = emissionsData[model]?.[task]?.[gpu];
+          if (entry) {
+            let existingGPU = chartData.find((d) => d.gpu === gpu);
+            if (!existingGPU) {
+              existingGPU = { gpu };
+              chartData.push(existingGPU);
+            }
+            existingGPU[model] = entry.emissions || 0; // Store emissions per task
+          }
+        });
+      });
+
+      // console.log(chartData);
+
       return (
         <div>
           <Card className="transparent-card" sx={{ mb: 2 }}>
@@ -368,7 +570,7 @@ const App = () => {
               <Typography>{taskDescriptions[task].definition}</Typography>
             </CardContent>
           </Card>
-          <Card className="transparent-card">
+          <Card className="transparent-card" sx={{ mb: 2 }}>
             <CardContent>
               <Box
                 display="grid"
@@ -398,10 +600,105 @@ const App = () => {
               </Box>
             </CardContent>
           </Card>
+          {/* Bar Chart for Emissions per GPU per Task */}
+          <Card className="transparent-card">
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Emissions by Model and GPU
+              </Typography>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <XAxis
+                    dataKey="gpu"
+                    tick={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: 14,
+                    }}
+                  >
+                    <Label
+                      value="GPU"
+                      offset={-5}
+                      position="insideBottom"
+                      style={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 16,
+                        fill: "#FFF",
+                      }}
+                    />
+                  </XAxis>
+                  <YAxis
+                    tick={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: 14,
+                    }}
+                  >
+                    <Label
+                      value="Emissions (g CO₂ eq.)"
+                      angle={-90}
+                      position="insideLeft"
+                      style={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 16,
+                        fill: "#FFF",
+                      }}
+                    />
+                  </YAxis>
+                  <Tooltip
+                    contentStyle={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: "14px",
+                    }}
+                  />
+                  <Legend
+                    layout="horizontal"
+                    verticalAlign="top"
+                    align="center"
+                    wrapperStyle={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: "14px",
+                      color: "#FFF",
+                    }}
+                  />
+                  {models.map((model, index) => (
+                    <Bar
+                      key={model}
+                      dataKey={model}
+                      fill={
+                        ["#4A90E2", "#2AB6B6", "#B67991", "#FF6B6B"][index % 4]
+                      }
+                      name={model}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </div>
       );
     } else if (gpu && !model && !task) {
       // Only GPU selected
+
+      const chartData = [];
+
+      tasks.forEach((task) => {
+        models.forEach((model) => {
+          const entry = emissionsData[model]?.[task]?.[gpu];
+          if (entry) {
+            let existingModel = chartData.find((d) => d.model === model);
+            if (!existingModel) {
+              existingModel = { model };
+              chartData.push(existingModel);
+            }
+            existingModel[task] = entry.emissions || 0; // Store emissions per task
+          }
+        });
+      });
+
+      console.log(chartData);
+
       return (
         <div>
           <Card className="transparent-card" sx={{ mb: 2 }}>
@@ -412,7 +709,7 @@ const App = () => {
               <Typography>{gpuInfo[gpu].description}</Typography>
             </CardContent>
           </Card>
-          <Card className="transparent-card">
+          <Card className="transparent-card" sx={{ mb: 2 }}>
             <CardContent>
               <Box
                 display="grid"
@@ -440,6 +737,80 @@ const App = () => {
                   })
                 )}
               </Box>
+            </CardContent>
+          </Card>
+          {/* Bar Chart for Emissions per GPU per Task */}
+          <Card className="transparent-card">
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Emissions by Model and Task
+              </Typography>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <XAxis
+                    dataKey="model"
+                    tick={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: 14,
+                    }}
+                  >
+                    <Label
+                      value="Models"
+                      offset={-5}
+                      position="insideBottom"
+                      style={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 16,
+                        fill: "#FFF",
+                      }}
+                    />
+                  </XAxis>
+                  <YAxis
+                    tick={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: 14,
+                    }}
+                  >
+                    <Label
+                      value="Emissions (g CO₂ eq.)"
+                      angle={-90}
+                      position="insideLeft"
+                      style={{
+                        fontFamily: "'Sequel Sans', sans-serif",
+                        fontSize: 16,
+                        fill: "#FFF",
+                      }}
+                    />
+                  </YAxis>
+                  <Tooltip
+                    contentStyle={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: "14px",
+                    }}
+                  />
+                  <Legend
+                    layout="horizontal"
+                    verticalAlign="top"
+                    align="center"
+                    wrapperStyle={{
+                      fontFamily: "'Sequel Sans', sans-serif",
+                      fontSize: "14px",
+                      color: "#FFF",
+                    }}
+                  />
+                  {tasks.map((task, index) => (
+                    <Bar
+                      key={task}
+                      dataKey={task}
+                      fill={["#4A90E2", "#2AB6B6", "#B67991"][index % 3]}
+                      name={task}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>

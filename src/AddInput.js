@@ -68,11 +68,11 @@ const AddInput = () => {
         const response = await axios.get("http://localhost:5000/api/data");
         // const response = await axios.get("https://fyp-ui.onrender.com/api/data"); // Updated URL
         setRows(response.data);
-        setLoading(true);
+        //setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to fetch data.");
-        setLoading(false);
+        //setLoading(false);
       }
     };
 
@@ -206,11 +206,6 @@ const AddInput = () => {
           <NavLink to="/" className="navbar-link">
             <Typography variant="h6" component="div">
               Home
-            </Typography>
-          </NavLink>
-          <NavLink to="/add-input" className="navbar-link">
-            <Typography variant="h6" component="div">
-              Add Input
             </Typography>
           </NavLink>
         </Toolbar>
