@@ -65,14 +65,15 @@ const AddInput = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const response = await axios.get("http://localhost:5000/api/data");
-        const response = await axios.get("https://fyp-ui.onrender.com/api/data"); // Updated URL
+        setLoading(true);
+        const response = await axios.get("https://fyp-ui.onrender.com/api/data");
         setRows(response.data);
-        //setLoading(false);
+        setError(null);  // ✅ Reset error if request succeeds
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError("Failed to fetch data.");
-        //setLoading(false);
+        setError(true); // ✅ Set error when backend is unreachable (IDLE mode)
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -276,11 +277,11 @@ const AddInput = () => {
         </Box>
       </Box>
 
-      {/* Show message if no data is available */}
-      {(error || error?.message.includes("Network Error")) && (
+      {/* Show message if backend is IDLE (down) */}
+      {error && (
         <Box sx={{ textAlign: "center", marginTop: 4 }}>
           <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
-            Backend server is booting up. Please refresh the page in 1-2 minutes...
+            Backend server is starting up. Please refresh the page in 1-2 minutes...
           </Typography>
         </Box>
       )}
