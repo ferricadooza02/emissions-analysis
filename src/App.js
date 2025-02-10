@@ -860,7 +860,7 @@ const App = () => {
   };
 
   return (
-    <Router basename="/emissions-analysis">
+    <Router>
       <div className="App">
         <div className="background-overlay"></div>
         <Navbar />
