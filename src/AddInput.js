@@ -61,6 +61,8 @@ const AddInput = () => {
     github_user: "",
   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "normal" });
+  // Check if any filter is applied
+  const hasFilters = Object.values(filters).some(value => value !== "");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -526,9 +528,9 @@ const AddInput = () => {
         </Typography>
       </Box>
 
-      {/* Show message if backend is IDLE (down) */}
-      {error && (
-        <Box sx={{ textAlign: "center", marginTop: 4 }}>
+      {/* Show message only if there are no filters AND no data */}
+      {!hasFilters && rows.length === 0 && (
+        <Box sx={{ textAlign: "center", marginTop: 6 }}>  {/* Added extra margin to shift it down */}
           <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
             Backend server is starting up. Please refresh the page in 1-2 minutes...
           </Typography>
