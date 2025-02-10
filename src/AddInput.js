@@ -215,48 +215,48 @@ const AddInput = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between", // Ensures buttons are right-aligned
           alignItems: "center",
-          position: "relative",
           maxWidth: "90%",
           margin: "20px auto",
         }}
       >
+        {/* Title */}
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ color: "white", flexGrow: 1, textAlign: "center" }}
+          sx={{ color: "white", textAlign: "center", flexGrow: 1 }}
         >
           Model-Task Energy Consumption & Emissions
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ position: "absolute", right: 0 }}
-          onClick={() => setOpen(true)}
-        >
-          Add Input
-        </Button>
-        
-        {/* Clear Filters Button - Changes to Red if No Data is Found */}
-        <Button
-          variant="contained"
-          color={filteredRows.length === 0 && Object.values(filters).some(value => value) ? "error" : "primary"} 
-          sx={{
-            position: "relative",
-            right: 0
-          }}
-          onClick={() => setFilters({
-            model: "",
-            task: "",
-            gpu: "",
-            gpu_location: "",
-            code_environment: "",
-            github_user: "",
-          })}
-        >
-          Clear Filters
-        </Button>
+
+        {/* Buttons Container - Side by Side */}
+        <Box sx={{ display: "flex", gap: 2 }}> 
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ width: 150, height: 40, fontSize: "0.875rem", fontWeight: "bold" }}
+            onClick={() => setOpen(true)}
+          >
+            ADD INPUT
+          </Button>
+
+          <Button
+            variant="contained"
+            color={filteredRows.length === 0 && Object.values(filters).some(value => value) ? "error" : "primary"}
+            sx={{ width: 150, height: 40, fontSize: "0.875rem", fontWeight: "bold" }}
+            onClick={() => setFilters({
+              model: "",
+              task: "",
+              gpu: "",
+              gpu_location: "",
+              code_environment: "",
+              github_user: "",
+            })}
+          >
+            CLEAR FILTERS
+          </Button>
+        </Box>
       </Box>
 
       {/* Show message if no data is available */}
