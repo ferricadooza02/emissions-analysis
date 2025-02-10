@@ -827,7 +827,7 @@ const App = () => {
   const Navbar = () => {
     const location = useLocation();
 
-    if (location.pathname === "/add-input") return null;
+    if (location.pathname === "#/add-input") return null;
 
     return (
       <AppBar position="sticky" className="transparent-navbar">
@@ -847,7 +847,7 @@ const App = () => {
               Emissions Estimation
             </Typography>
           </ScrollLink>
-          <NavLink to="/add-input" className="navbar-link">
+          <NavLink to="#/add-input" className="navbar-link">
             <Typography variant="h6" component="div">
               Add Input
             </Typography>
@@ -1082,7 +1082,7 @@ const App = () => {
               </Box>
             }
           />
-          <Route path="/add-input" element={<AddInput />} />
+          <Route path="#/add-input" element={<AddInput />} />
         </Routes>
       </div>
     </Router>
