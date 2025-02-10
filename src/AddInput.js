@@ -488,23 +488,32 @@ const AddInput = () => {
         </TableContainer>
       </Box>
 
-      {/* Sorting Legend Section */}
-      <Box sx={{ textAlign: "center", marginTop: 3, color: "white" }}>
-        <Typography variant="h6">Sorting Legend</Typography>
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, marginTop: 1 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <ArrowUpward sx={{ color: "white" }} />
-            <Typography>Ascending Order</Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <Remove sx={{ color: "white" }} />
-            <Typography>Normal (No Sorting)</Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <ArrowDownward sx={{ color: "white" }} />
-            <Typography>Descending Order</Typography>
-          </Box>
-        </Box>
+      {/* Sorting Legend - Left-Aligned & Extra Text BESIDE Sorting Legend */}
+      <Box 
+        sx={{ 
+          display: "flex", 
+          alignItems: "center", 
+          marginTop: 3, 
+          color: "white",
+          maxWidth: "90%", 
+          marginX: "auto",  
+          gap: 1 // Ensures small spacing between elements
+        }}
+      >
+        <Typography variant="h6" component="span" sx={{ fontWeight: "bold" }}>
+          Sorting Legend:&nbsp;
+        </Typography>
+        <ArrowUpward sx={{ color: "white", fontSize: 18 }} />
+        <Typography component="span">Ascending</Typography>
+        <Remove sx={{ color: "white", fontSize: 18 }} />
+        <Typography component="span">Normal</Typography>
+        <ArrowDownward sx={{ color: "white", fontSize: 18 }} />
+        <Typography component="span">Descending</Typography>
+
+        {/* Extra Text RIGHT BESIDE Sorting Legend */}
+        <Typography variant="body2" sx={{ fontStyle: "italic", marginLeft: 2 }}>
+          (Applicable to the headers: Energy, Emissions, Runtime, Emissions Rate )
+        </Typography>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
