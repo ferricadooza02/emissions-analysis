@@ -237,6 +237,26 @@ const AddInput = () => {
         >
           Add Input
         </Button>
+        
+        {/* Clear Filters Button - Changes to Red if No Data is Found */}
+        <Button
+          variant="contained"
+          color={filteredRows.length === 0 && Object.values(filters).some(value => value) ? "error" : "primary"} 
+          sx={{
+            position: "relative",
+            right: 0
+          }}
+          onClick={() => setFilters({
+            model: "",
+            task: "",
+            gpu: "",
+            gpu_location: "",
+            code_environment: "",
+            github_user: "",
+          })}
+        >
+          Clear Filters
+        </Button>
       </Box>
 
       {/* Show message if no data is available */}
@@ -375,25 +395,6 @@ const AddInput = () => {
             },
           }}
         />
-        {/* Clear Filters Button - Changes to Red if No Data is Found */}
-        <Button
-          variant="contained"
-          color={filteredRows.length === 0 && Object.values(filters).some(value => value) ? "error" : "primary"} 
-          sx={{
-            position: "relative",
-            right: 0
-          }}
-          onClick={() => setFilters({
-            model: "",
-            task: "",
-            gpu: "",
-            gpu_location: "",
-            code_environment: "",
-            github_user: "",
-          })}
-        >
-          Clear Filters
-        </Button>
       </Box>
 
       {/* Show message if filters are applied but no data is found */}
