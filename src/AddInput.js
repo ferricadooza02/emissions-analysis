@@ -277,7 +277,7 @@ const AddInput = () => {
       </Box>
 
       {/* Show message if no data is available */}
-      {(rows.length === 0 || error) && !loading && (
+      {error && !loading && (
         <Box sx={{ textAlign: "center", marginTop: 4 }}>
           <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
             Backend server is starting, please refresh the page in 1-2 minutes...
@@ -451,7 +451,7 @@ const AddInput = () => {
                 </TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexDirection: "row-reverse" }}>
-                    <strong>Emissions (kg CO₂)</strong>
+                    <strong>Emissions (g CO₂)</strong>
                     <IconButton onClick={() => handleSort("emissions")}>
                       {renderSortIcon("emissions")}
                     </IconButton>
@@ -641,7 +641,7 @@ const AddInput = () => {
           />
           <TextField
             margin="dense"
-            label="Emissions (kg CO₂)"
+            label="Emissions (g CO₂)"
             name="emissions"
             value={formData.emissions}
             onChange={handleChange}
