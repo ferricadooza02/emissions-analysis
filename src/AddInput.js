@@ -239,6 +239,15 @@ const AddInput = () => {
         </Button>
       </Box>
 
+      {/* Show message if no data is available */}
+      {rows.length === 0 && !loading && (
+        <Box sx={{ textAlign: "center", marginTop: 4 }}>
+          <Typography variant="h6" color="white">
+            Backend server is starting, please refresh the page in 1-2 minutes...
+          </Typography>
+        </Box>
+      )}
+
       {/* Filters */}
       <Box
         sx={{
@@ -366,7 +375,36 @@ const AddInput = () => {
             },
           }}
         />
+        {/* Clear Filters Button */}
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => setFilters({
+            model: "",
+            task: "",
+            gpu: "",
+            gpu_location: "",
+            code_environment: "",
+            github_user: "",
+          })}
+          sx={{
+            color: "white",
+            borderColor: "white",
+            "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.2)" },
+          }}
+        >
+          Clear Filters
+        </Button>
       </Box>
+
+      {/* Show message if filters are applied but no data is found */}
+      {filteredRows.length === 0 && Object.values(filters).some(value => value) && (
+        <Box sx={{ textAlign: "center", marginTop: 4 }}>
+          <Typography variant="h6" color="white">
+            No available data for filters entered.
+          </Typography>
+        </Box>
+      )}
 
       <Box sx={{ maxWidth: "90%", margin: "20px auto", position: "relative" }}>
 
