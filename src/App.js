@@ -1,6 +1,6 @@
 import { modelInfo, taskDescriptions, gpuInfo, emissionsData } from "./data";
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
 import AddInput from "./AddInput";
 import "./App.css";
 // import HyperparameterOptimisation from "./components/HyperparameterOptimisation";
