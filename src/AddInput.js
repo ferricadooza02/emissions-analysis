@@ -231,20 +231,37 @@ const AddInput = () => {
         </Typography>
 
         {/* Buttons Container - Side by Side */}
-        <Box sx={{ display: "flex", gap: 2 }}> 
+        <Box sx={{ display: "flex", gap: 2 }}>
           <Button
             variant="contained"
             color="primary"
-            sx={{ width: 150, height: 40, fontSize: "0.875rem", fontWeight: "bold" }}
+            sx={{
+              width: 150,
+              height: 40,
+              fontSize: "0.875rem",  // Matches TextField font size
+              fontWeight: "normal",   // Removed bold styling
+              textTransform: "none",  // Ensures text is NOT all uppercase
+              color: "white",         // Matches placeholder text color
+              backgroundColor: "#1976d2", // Ensure consistent primary color
+              "&:hover": { backgroundColor: "#1565c0" }, // Darker hover effect
+            }}
             onClick={() => setOpen(true)}
           >
-            ADD INPUT
+            Add Input
           </Button>
 
           <Button
             variant="contained"
             color={filteredRows.length === 0 && Object.values(filters).some(value => value) ? "error" : "primary"}
-            sx={{ width: 150, height: 40, fontSize: "0.875rem", fontWeight: "bold" }}
+            sx={{
+              width: 150,
+              height: 40,
+              fontSize: "0.875rem",  // Matches TextField font size
+              fontWeight: "normal",   // Removed bold styling
+              textTransform: "none",  // Ensures text is NOT all uppercase
+              color: "white",         // Matches placeholder text color
+              "&:hover": { backgroundColor: "#c62828" }, // Darker red hover effect when active
+            }}
             onClick={() => setFilters({
               model: "",
               task: "",
@@ -254,7 +271,7 @@ const AddInput = () => {
               github_user: "",
             })}
           >
-            CLEAR FILTERS
+            Clear Filters
           </Button>
         </Box>
       </Box>
