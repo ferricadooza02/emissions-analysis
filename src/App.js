@@ -959,17 +959,18 @@ const App = () => {
                                 comprising 2000 samples, with a batch size of 1.
                                 Fine-tuning was conducted for 2 epochs. To estimate
                                 variations based on different parameters, refer to the{" "}
-                                <Link
-                                  to="estimation"
-                                  className="methodology-link"
-                                  sx={{
-                                    color: "#ffffff",
-                                    textDecoration: "underline",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Emissions Estimation
-                                </Link>{" "}
+                                <Typography component="span">
+                                  <ScrollLink 
+                                    to="estimation" 
+                                    smooth 
+                                    offset={-70} 
+                                    duration={500} 
+                                    className="methodology-link"
+                                    style={{ color: "#ffffff", textDecoration: "underline", cursor: "pointer" }}
+                                  >
+                                    Emissions Estimation
+                                  </ScrollLink>
+                                </Typography>{" "}
                                 section.
                               </>
                             }
