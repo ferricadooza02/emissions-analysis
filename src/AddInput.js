@@ -375,10 +375,14 @@ const AddInput = () => {
             },
           }}
         />
-        {/* Clear Filters Button */}
+        {/* Clear Filters Button - Changes to Red if No Data is Found */}
         <Button
-          variant="outlined"
-          color="secondary"
+          variant="contained"
+          color={filteredRows.length === 0 && Object.values(filters).some(value => value) ? "error" : "primary"} 
+          sx={{
+            position: "relative",
+            right: 0
+          }}
           onClick={() => setFilters({
             model: "",
             task: "",
@@ -387,11 +391,6 @@ const AddInput = () => {
             code_environment: "",
             github_user: "",
           })}
-          sx={{
-            color: "white",
-            borderColor: "white",
-            "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.2)" },
-          }}
         >
           Clear Filters
         </Button>
@@ -487,6 +486,25 @@ const AddInput = () => {
           </TableBody>
           </Table>
         </TableContainer>
+      </Box>
+
+      {/* Sorting Legend Section */}
+      <Box sx={{ textAlign: "center", marginTop: 3, color: "white" }}>
+        <Typography variant="h6">Sorting Legend</Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, marginTop: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <ArrowUpward sx={{ color: "white" }} />
+            <Typography>Ascending Order</Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Remove sx={{ color: "white" }} />
+            <Typography>Normal (No Sorting)</Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <ArrowDownward sx={{ color: "white" }} />
+            <Typography>Descending Order</Typography>
+          </Box>
+        </Box>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
