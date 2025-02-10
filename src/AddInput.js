@@ -277,15 +277,6 @@ const AddInput = () => {
         </Box>
       </Box>
 
-      {/* Show message if backend is IDLE (down) */}
-      {error && (
-        <Box sx={{ textAlign: "center", marginTop: 4 }}>
-          <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
-            Backend server is starting up. Please refresh the page in 1-2 minutes...
-          </Typography>
-        </Box>
-      )}
-
       {/* Filters */}
       <Box
         sx={{
@@ -534,6 +525,15 @@ const AddInput = () => {
           (Applicable to the headers: Energy, Emissions, Runtime, Emissions Rate )
         </Typography>
       </Box>
+
+      {/* Show message if backend is IDLE (down) */}
+      {error && (
+        <Box sx={{ textAlign: "center", marginTop: 4 }}>
+          <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
+            Backend server is starting up. Please refresh the page in 1-2 minutes...
+          </Typography>
+        </Box>
+      )}
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>Add Input</DialogTitle>
