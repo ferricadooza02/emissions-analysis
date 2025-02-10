@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/emissions-analysis/static/css/main.1a9295cf.css",
-    "main.js": "/emissions-analysis/static/js/main.cf5727c6.js",
+    "main.js": "/emissions-analysis/static/js/main.ed475e29.js",
     "static/js/453.42faa90b.chunk.js": "/emissions-analysis/static/js/453.42faa90b.chunk.js",
     "static/media/Sequel Sans Roman Disp.ttf": "/emissions-analysis/static/media/Sequel Sans Roman Disp.f2c71255a79d4a370cc9.ttf",
     "index.html": "/emissions-analysis/index.html",
     "main.1a9295cf.css.map": "/emissions-analysis/static/css/main.1a9295cf.css.map",
-    "main.cf5727c6.js.map": "/emissions-analysis/static/js/main.cf5727c6.js.map",
+    "main.ed475e29.js.map": "/emissions-analysis/static/js/main.ed475e29.js.map",
     "453.42faa90b.chunk.js.map": "/emissions-analysis/static/js/453.42faa90b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1a9295cf.css",
-    "static/js/main.cf5727c6.js"
+    "static/js/main.ed475e29.js"
   ]
 }
