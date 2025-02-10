@@ -277,10 +277,10 @@ const AddInput = () => {
       </Box>
 
       {/* Show message if no data is available */}
-      {error && !loading && (
+      {(error || error?.message.includes("Network Error")) && (
         <Box sx={{ textAlign: "center", marginTop: 4 }}>
           <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
-            Backend server is starting, please refresh the page in 1-2 minutes...
+            Backend server is booting up. Please refresh the page in 1-2 minutes...
           </Typography>
         </Box>
       )}
