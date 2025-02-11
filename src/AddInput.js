@@ -142,7 +142,8 @@ const AddInput = () => {
         timestamp: formData.timestamp || "NA", 
         remarks: formData.remarks || null, 
       };
-      await axios.post("https://fyp-ui.onrender.com", dataToSubmit);
+      // await axios.post("https://fyp-ui.onrender.com", dataToSubmit);
+      await axios.post("https://fyp-ui.onrender.com/api/data", dataToSubmit);
       // await axios.post("http://localhost:5000/api/data", dataToSubmit);
       setRows((prevRows) => [...prevRows, dataToSubmit]);
       setOpen(false);
